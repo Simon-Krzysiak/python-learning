@@ -232,51 +232,6 @@ for i in range(10):
     print(PokerHand.hand_names[i],probs[i][1],'%')
         
 
-    
-# Test code
-# =============================================================================
-# card = Card()
-# hand = Hand()
-# deck = Deck()
-# deck.shuffle()
-# poker = PokerHand(deck)
-# poker.value = poker.classify()
-# print(poker)
-# poker.print_value()
-# print('\n')
-# print('R FLUSH:',poker.has_royal_flush())
-# print('S FLUSH:', poker.has_straight_flush())
-# print('FOUR: ', poker.has_four())
-# print('FULL HOUSE: ', poker.has_fullhouse())
-# print('FLUSH: ', poker.has_flush())
-# print('STRAIGHT: ', poker.has_straight())
-# print(poker.has_three())
-# print(poker.has_two_pairs())
-# print(poker.has_pair())
-# 
-# card1 = Card(14,3)
-# card2 = Card(13,3)
-# card3 = Card(12,3)
-# card4 = Card(11,3)
-# card5 = Card(10,3)
-# 
-# rflush_deck = Deck([card1,card2,card3,card4,card5])
-# sflush_deck = copy.deepcopy(rflush_deck)
-# sflush_deck.remove_card(card1)
-# sflush_deck.add_card(Card(9,3))
-# four_deck = Deck([Card(3,0),Card(3,1),Card(3,2),Card(3,3),Card(2,0)])
-# full_deck = Deck([Card(2,0),Card(2,1),Card(2,2),Card(3,0),Card(3,1)])
-# flush_deck = Deck([Card(2),Card(3),Card(4),Card(5),Card(7)])
-# straight_deck = Deck([Card(2),Card(3),Card(4),Card(5),Card(6,1)])
-# PokerHand(rflush_deck).print_value()
-# PokerHand(sflush_deck).print_value()
-# PokerHand(four_deck).print_value()
-# PokerHand(full_deck).print_value()
-# PokerHand(flush_deck).print_value()
-# PokerHand(straight_deck).print_value()
-# =============================================================================
-
-
 
 
 
