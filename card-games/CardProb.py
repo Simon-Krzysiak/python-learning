@@ -5,24 +5,25 @@ Created on Mon Dec 14 12:21:25 2020
 
 @author: Simon Krzysiak
 """
-import random, math
+import random
+import math
+
 
 class Hist(dict):
     """A histogram representing frequencies of occurrence."""
-    
+
     def __init__(self, items=[]):
         """Initialise the histogram with items, each with frequency 1."""
         for item in items:
             self[item] = 1
-        
+
     def change_freq(self, x, change=1):
         """Changes frequency of x by change"""
-        self[x] = self.get(x,0) + change
-        
+        self[x] = self.get(x, 0) + change
+
         """Remove the key if the frequency is no longer positive."""
         if self[x] <= 0:
             del self[x]
-
 
 
 class Card:
@@ -30,32 +31,33 @@ class Card:
         attributes:
         rank: int 2-14
         suit: int 0-3
-        
         """
-    
+
     suit_names = ['Clubs', 'Diamonds', 'Hearts', 'Spades']
-    rank_names = [None,None,'2','3','4','5','6','7','8','9','10','Jack',
-                  'Queen','King','Ace']
-    
+    rank_names = [None, None, '2', '3', '4', '5', '6', '7', '8', '9',
+                  '10', 'Jack', 'Queen', 'King', 'Ace']
+
     def __init__(self, rank=2, suit=0):
         """Initialises a card. By default it's 2 of Clubs."""
         self.suit = suit
         self.rank = rank
-    
+
     def __str__(self):
-        return '%s of %s' %(Card.rank_names[self.rank],Card.suit_names[self.suit])
-    
+        return '%s of %s' % (Card.rank_names[self.rank],
+                             Card.suit_names[self.suit])
+
     def __lt__(self, other):
-        return (self.rank,self.suit) < (other.rank, other.suit)
-    
+        return (self.rank, self.suit) < (other.rank, other.suit)
+
+
 class Deck:
     """Represents a deck of Cards.
         attributes: cards(list of Cards)"""
-    
-    def __init__(self,cards=[]):
+
+    def __init__(self, cards=[]):
         if cards == []:
             self.cards = list()
-            for rank in range(2,15):
+            for rank in range(2, 15):
                 for suit in range(4):
                     card = Card(rank,suit)
                     self.cards.append(card)
@@ -230,52 +232,3 @@ def estimate_probabilities(multiplier=1):
 probs = estimate_probabilities()
 for i in range(10):
     print(PokerHand.hand_names[i],probs[i][1],'%')
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
