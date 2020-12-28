@@ -74,12 +74,17 @@ class Player:
             hand: BlackJackHand
             money: non-negative int
             bet: non-negative int, <= money
+            target: non-negative int > money
     """
 
-    def __init__(self, money=0):
+    def __init__(self, money=0, target=0):
         self.hand = BlackJackHand()
         self.money = money
         self.bet = 0
+        if target == 0:
+            self.target = 2 * money
+        else:
+            self.target = target
 
     def __str__(self):
         out = list()
@@ -122,34 +127,27 @@ class Dealer:
         return total
     
     def play_round(self, players, deck):
+        
         self.hand = BlackJackHand()
-        self.hand.move_cards(deck, 2)
-        self.hand.cmpt_value()
-        print("Test:", self.hand.value)
+        self.hand.move_cards(deck, 1)
+
         while True:
-            if self.hand.value > 20:
-                break
-            curr_gain = self.winnings(players)
-            print("Test: loop: curr_winnings, hand value = ", curr_gain, self.hand.value)
-            pot_gain = 0
-            for crd in deck.cards:
-                print("Test: loop: card, winnings =", crd, self.winnings(players, crd))
-                pot_gain += (self.winnings(players, crd) - curr_gain)
-            print("Test: loop: pot_gain", pot_gain)
-            if pot_gain < 0:
-                break
-            elif pot_gain == 0 and curr_gain < 0:
-                break
             self.hand.move_cards(deck, 1)
             self.hand.cmpt_value()
-            print("Test: loop: hand value")
-            print(self.hand.value)
-        print("Test2:", self.hand.value)
+            curr_gain = self.winnings(players)
+            if self.hand.value > 20:
+                break
+
+            pot_gain = 0
+            for crd in deck.cards:
+                pot_gain += (self.winnings(players, crd) - curr_gain)
+            if pot_gain < 0:
+                break
+
+            self.hand.cmpt_value()
+        self.profit += curr_gain
             
                 
-                
-
-        
 class Game:
     """Represents a game of blackjack.
         attributes:
@@ -178,34 +176,40 @@ class Game:
         for player in self.players:
             player.play_round(deck)
         self.dealer.play_round(self.players, deck)
-        
-        
-        
-        
+        for player in self.players:
+            player.money -= (player.bet * self.dealer.hand.compare(player.hand))
+            if player.money == 0 or player.money >= player.target:
+                self.remove_player(player)
+    
+    def play(self, limit=1000):
+        counter = 0
+        while self.players and counter < limit:
+            self.play_round()
+            counter += 1
+
+            
 # driver code
-deck = card.Deck()
-deck.shuffle()
-# =============================================================================
-# hand = BlackJackHand()
-# hand.move_cards(deck, 5)
-# print(hand)
-# hand.cmpt_value()
-# print(hand.value)
-# =============================================================================
+def test():
+    player1 = Player(100)
+    player2 = Player(100)
+    player3 = Player(100)
+    game = Game([player1, player2, player3])
+    game.play_round()
+    for player in game.players:
+        print(player.money, player.bet, player.hand.value)
+    print("dealer:", game.dealer.hand.value)
+    print(game.dealer.winnings(game.players))
+    print("Profit:", game.dealer.profit)
 
-player1 = Player(100)
-player2 = Player(100)
-player3 = Player(100)
-game = Game([player1, player2, player3])
-print("Test: nr cards -", len(deck.cards))
-game.play_round()
-for player in game.players:
-    print(player.bet, player.hand.value)
-print("dealer:", game.dealer.hand.value)
-print(game.dealer.winnings(game.players))
 
-# =============================================================================
-# player.place_bet()
-# print(player.bet)
-# =============================================================================
+def test2():
+    player1 = Player(100)
+    player2 = Player(100)
+    player3 = Player(100)
+    game = Game([player1, player2, player3])
+    game.play()
+    return game.dealer.profit
 
+
+def test3():
+    return sum([test2() for _ in range(100)])
