@@ -8,6 +8,7 @@ Created on Mon Dec 28 13:39:13 2020
 
 import card
 import random
+import copy
 
 
 class BlackJackHand(card.Hand):
@@ -109,14 +110,44 @@ class Dealer:
             
     def __init__(self):
         self.hand = BlackJackHand()
-        profit = 0
+        self.profit = 0
         
+    def winnings(self, players, crd=None):
+        hand = copy.deepcopy(self.hand)
+        if crd is not None:
+            hand.add_card(copy.deepcopy(crd))
+        total = 0
+        for player in players:
+            total += (player.bet * hand.compare(player.hand))
+        return total
+    
     def play_round(self, players, deck):
         self.hand = BlackJackHand()
-        
-        while self.hand.value < 17:
+        self.hand.move_cards(deck, 2)
+        self.hand.cmpt_value()
+        print("Test:", self.hand.value)
+        while True:
+            if self.hand.value > 20:
+                break
+            curr_gain = self.winnings(players)
+            print("Test: loop: curr_winnings, hand value = ", curr_gain, self.hand.value)
+            pot_gain = 0
+            for crd in deck.cards:
+                print("Test: loop: card, winnings =", crd, self.winnings(players, crd))
+                pot_gain += (self.winnings(players, crd) - curr_gain)
+            print("Test: loop: pot_gain", pot_gain)
+            if pot_gain < 0:
+                break
+            elif pot_gain == 0 and curr_gain < 0:
+                break
             self.hand.move_cards(deck, 1)
             self.hand.cmpt_value()
+            print("Test: loop: hand value")
+            print(self.hand.value)
+        print("Test2:", self.hand.value)
+            
+                
+                
 
         
 class Game:
@@ -166,9 +197,12 @@ player1 = Player(100)
 player2 = Player(100)
 player3 = Player(100)
 game = Game([player1, player2, player3])
+print("Test: nr cards -", len(deck.cards))
 game.play_round()
 for player in game.players:
-    print(player)
+    print(player.bet, player.hand.value)
+print("dealer:", game.dealer.hand.value)
+print(game.dealer.winnings(game.players))
 
 # =============================================================================
 # player.place_bet()
