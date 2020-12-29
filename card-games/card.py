@@ -4,6 +4,9 @@
 Created on Mon Dec 14 12:21:25 2020
 
 @author: Simon Krzysiak
+
+This module contains Card, Deck and Hand classes which provide basic
+framework for card games based programs.
 """
 import random
 
@@ -51,7 +54,8 @@ class Card:
 
 class Deck:
     """Represents a deck of Cards.
-        attributes: cards(list of Cards)"""
+        attributes:
+            cards: list of Cards"""
 
     def __init__(self, cards=[]):
         if cards == []:
@@ -81,10 +85,12 @@ class Deck:
 
     def pop_card(self):
         """Picks the last card from self."""
+        
         return self.cards.pop()
 
     def move_cards(self, other, nr_cards):
         """Moves nr_cards from other to sef """
+        
         for i in range(nr_cards):
             self.cards.append(other.pop_card())
 
@@ -104,12 +110,14 @@ class Hand(Deck):
 
     def ranks(self):
         """Builds a histogram of ranks, stored at self.ranks."""
+        
         self.ranks = Hist()
         for card in self.cards:
             self.ranks.change_freq(card.rank, 1)
 
     def suits(self):
         """Builds a histogram of suits, stored at self.suits."""
+        
         self.suits = Hist()
         for card in self.cards:
             self.suits.change_freq(card.suit, 1)

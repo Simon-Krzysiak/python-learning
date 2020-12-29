@@ -6,9 +6,9 @@ Created on Mon Dec 28 13:39:13 2020
 @author: Simon Krzysiak
 """
 
-import card
-import random
 import copy
+import random
+import card
 
 
 class BlackJackHand(card.Hand):
@@ -23,20 +23,19 @@ class BlackJackHand(card.Hand):
             self.cards = list()
         else:
             self.cards = cards
+            
         self.cmpt_value()
 
     def cmpt_value(self):
         val = 0
         for crd in self.cards:
-            if crd.rank <= 10:
-                val += crd.rank
-            elif 11 <= crd.rank <= 13:
-                val += 10
+            if crd.rank <= 13:  # This deals with ranks from 2 to king
+                val += min(crd.rank, 10)
             else:
                 """Dealing with variable value of aces will be
                 implemented later"""
                 val += 11
-
+                
         self.value = val
 
     def compare(self, other):
@@ -49,6 +48,7 @@ class BlackJackHand(card.Hand):
              - otherwise higher value wins
 
             Dealing with variable value of aces will be implemented later."""
+            
         self.cmpt_value()
         other.cmpt_value()
         val1 = self.value
@@ -82,6 +82,8 @@ class Player:
         self.money = money
         self.bet = 0
         if target == 0:
+            """If no target is provided, set it to 2 times the initial amount
+                of money."""
             self.target = 2 * money
         else:
             self.target = target
@@ -91,14 +93,21 @@ class Player:
         out.append('Player with:\n')
         out.append(str(self.money) + ' money,\n')
         out.append(str(self.bet) + ' bet,\n')
-        out.append(str(self.hand.value) + ' hand value.')
-        
+        out.append(str(self.hand.value) + ' hand value,\n')
+        out.append(str(self.target) + ' target.')
         return ''.join(out)
 
     def place_bet(self):
+        """Places a random bet, between 1 and half of current amount of
+            money, with 1 being the minimum bet amount."""
+            
         self.bet = random.randint(1, max(self.money // 2, 1))
         
     def play_round(self, deck):
+        """Plays one round against a dealer: first places a random bet, then
+            draws cards from the game's deck till the hand's value is
+            at least 17."""
+            
         self.hand = BlackJackHand()
         self.place_bet()
         
@@ -121,13 +130,13 @@ class Dealer:
         hand = copy.deepcopy(self.hand)
         if crd is not None:
             hand.add_card(copy.deepcopy(crd))
+            
         total = 0
         for player in players:
             total += (player.bet * hand.compare(player.hand))
         return total
     
     def play_round(self, players, deck):
-        
         self.hand = BlackJackHand()
         self.hand.move_cards(deck, 1)
 
@@ -177,7 +186,8 @@ class Game:
             player.play_round(deck)
         self.dealer.play_round(self.players, deck)
         for player in self.players:
-            player.money -= (player.bet * self.dealer.hand.compare(player.hand))
+            player.money -= (
+                player.bet * self.dealer.hand.compare(player.hand))
             if player.money == 0 or player.money >= player.target:
                 self.remove_player(player)
     
