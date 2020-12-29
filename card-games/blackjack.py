@@ -4,7 +4,6 @@
 Created on Mon Dec 28 13:39:13 2020
 
 @author: Simon Krzysiak
-
 """
 
 import copy
